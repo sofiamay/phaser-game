@@ -14,7 +14,7 @@ var config = {
     preload: preload,
     create: create,
     update: update,
-  }
+  },
 };
 
 game = new Phaser.Game(config);
@@ -27,10 +27,9 @@ var groundLayer, pineappleLayer;
 var trumps;
 var text;
 var frozenText;
+var gameWonText;
 var score = 0;
 var timer;
-
-
 
 function preload() {
   // map made with Tiled in JSON format
@@ -86,7 +85,9 @@ function create() {
   text.setScrollFactor(0);
 
   ////* Note *////
-  note = this.add.sprite(3400, 300, 'note');
+  note = this.physics.add.sprite(3400, 300, 'note');
+  // note = this.physics.add.sprite(200, 300, 'note');
+  this.physics.add.collider(note, groundLayer);
 
   ////* Twitter *////
 
@@ -135,6 +136,27 @@ function create() {
   this.physics.add.collider(groundLayer, player);
   // player will collide with twitter
   this.physics.add.collider(player, twitters, hitTwitter, null, this);
+  // collide with note 
+   this.physics.add.collider(player, note, gameWon, null, this);
+  function gameWon(player, note) {
+    this.physics.pause();
+
+    // create a group for our graphics
+    let rectGroup = this.add.group();
+    // created on the world
+    let graphics = this.add.graphics(); // adds to the world stage
+    graphics.lineStyle(2, 0xFFFFFF, 1);
+    graphics.fillStyle(0xFFF6EC7),
+    graphics.fillRect(2700, 100, 800,400)
+    rectGroup.add(graphics) // moves from world stage to group as a child
+
+    var message = "Dear Bret, \n I'm really looking forward to seeing you tonight! \n \n <3 Sophia"
+
+    gameWonText = this.add.text(2800, 150, message, {
+      fontSize: '20px',
+      fill: '#000000'
+    });
+  }
 
 
 
@@ -200,6 +222,16 @@ function create() {
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
+
+    // fade camera
+    this.time.delayedCall(250, function(){
+      this.cameras.main.fade(250);
+    }, [], this);
+
+    // restart the game
+    this.time.delayedCall(2000, function() {
+      this.scene.restart();
+    }, [], this);
   }
 
   this.anims.create ({
