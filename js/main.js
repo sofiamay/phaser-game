@@ -25,6 +25,7 @@ var cursors;
 var groundLayer, pineappleLayer;
 var trumps;
 var text;
+var frozenText;
 var score = 0;
 var timer;
 
@@ -36,8 +37,9 @@ function preload() {
   // tiles in spritesheet 
   this.load.image('tiles', 'assets/tiles.png')
   // pineapple
-  // simple coin image
   this.load.image('pineapple', 'assets/pineapple.png');
+  // twitter
+  this.load.image('twitter', 'assets/twitter.png');
   // load player sprites
   this.load.spritesheet('player', 
     '/assets/player.png',
@@ -80,6 +82,42 @@ function create() {
   // fix the text to the camera
   text.setScrollFactor(0);
 
+  ////* Twitter *////
+
+  twitters = this.physics.add.staticGroup();
+  this.physics.add.collider(twitters, groundLayer);
+
+  function enableControls(){
+    frozenText.destroy();
+    this.physics.resume();
+  }
+
+  function hitTwitter(player, twitters) {
+    player.x -= 50;
+    this.physics.pause();
+    frozenText = this.add.text(20, 250, 'Frozen', {
+      fontSize: '60px',
+      fill: '#ff0000'
+    });
+    frozenText.x = player.x;
+
+
+    timedEvent = this.time.addEvent({
+      delay: 2000,
+      callback: enableControls,
+      callbackScope: this
+    });
+
+    return false;
+  }
+
+  twitters.create(300, 250, 'twitter');
+  twitters.create(1400, 180, 'twitter');
+  twitters.children.iterate(function(twitter){
+    twitter.setBounce(.2);
+    twitter.setCollideWorldBounds(true);
+  });
+
  
   //////* Player */////
 
@@ -89,6 +127,10 @@ function create() {
   player.setScale(0.9);
   // player will collide with the level tiles 
   this.physics.add.collider(groundLayer, player);
+  // player will collide with twitter
+  this.physics.add.collider(player, twitters, hitTwitter, null, this);
+
+
 
   //player anims
   this.anims.create ({
@@ -113,7 +155,9 @@ function create() {
 
   cursors = this.input.keyboard.createCursorKeys();
 
+
   ///* Pineapples *///
+
   pineappleLayer = map.createDynamicLayer('Pineapples', pineappleTiles, 0, 0);
   pineappleLayer.setTileIndexCallback(18, collectPineapple, this);
   this.physics.add.overlap(player, pineappleLayer);
@@ -177,11 +221,6 @@ function create() {
       trump.anims.play('trump-right');
   });
 
-  // timedEvent = this.time.addEvent({
-  //   delay: 2000,
-  //   callback: hitTrump,
-  //   callbackScope: this
-  // });
 
 }
 
