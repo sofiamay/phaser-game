@@ -21,6 +21,7 @@ game = new Phaser.Game(config);
 
 var map;
 var player;
+var note;
 var cursors;
 var groundLayer, pineappleLayer;
 var trumps;
@@ -40,6 +41,8 @@ function preload() {
   this.load.image('pineapple', 'assets/pineapple.png');
   // twitter
   this.load.image('twitter', 'assets/twitter.png');
+  // note
+  this.load.image('note', 'assets/note.png')
   // load player sprites
   this.load.spritesheet('player', 
     '/assets/player.png',
@@ -81,6 +84,9 @@ function create() {
   });
   // fix the text to the camera
   text.setScrollFactor(0);
+
+  ////* Note *////
+  note = this.add.sprite(3400, 300, 'note');
 
   ////* Twitter *////
 
