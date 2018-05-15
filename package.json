@@ -2,9 +2,6 @@
   "name": "mysterious-game",
   "version": "1.0.0",
   "description": "",
-  "engines": {
-    "npm": ">6.0"
-  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
