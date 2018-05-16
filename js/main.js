@@ -150,7 +150,7 @@ function create() {
     graphics.fillRect(2700, 100, 800,400)
     rectGroup.add(graphics) // moves from world stage to group as a child
 
-    var message = "Dear Bret, \n I'm really looking forward to seeing you tonight! \n \n <3 Sophia"
+    var message = "Dear Bret, \n Thank you for a wonderful evening! \n \n <3 Sophia"
 
     gameWonText = this.add.text(2800, 150, message, {
       fontSize: '20px',
